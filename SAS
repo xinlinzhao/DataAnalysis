@@ -1,0 +1,55 @@
+ods excel file=&filepath.;
+
+ods excel options(sheet_name="No Device" sheet_interval="none");
+
+proc print data = table_nd noobs sumlabel='Total' GRANDTOTAL_LABEL="Grand Total";
+
+                format tran_amt dollar12. recovered_total dollar12. expect_wo2 dollar12. recovery_rate percent7.;
+
+                sum tran_amt recovered_total expect_wo2;
+
+                by cb;
+
+title 'No Device';
+
+run;
+
+proc print data = error_nd noobs;
+
+                format tran_amt dollar12. recovered_total dollar12. expect_wo2 dollar12. recovery_rate percent7.;
+
+run;
+
+ods excel options(sheet_name="Counterfeit" sheet_interval="now");
+
+proc print data = table_ca noobs sumlabel='Total' GRANDTOTAL_LABEL="Grand Total";
+
+                format tran_amt dollar12. recovered_total dollar12. expect_wo2 dollar12. recovery_rate percent7.;
+
+                sum tran_amt recovered_total expect_wo2;
+
+                by cb;
+
+title 'Counterfeit';
+
+run;
+
+proc print data = error_ca noobs;
+
+                format tran_amt dollar12. recovered_total dollar12. expect_wo2 dollar12. recovery_rate percent7.;
+
+run;
+
+ods excel close;
+
+ 
+
+proc transpose data=hist_data out=hist_data_view name=METRIC;
+
+by ready_to_work queue fraud_invstg_bckt_nm;
+
+var deduped;
+
+ID pull_date;
+
+run;
